@@ -11,7 +11,7 @@ import {
   updateTodo,
 } from './api/todos';
 import { Todo } from './types/Todo';
-import { ErrorMessage } from './utils /errorMessages';
+import { ErrorMessage } from './utils/errorMessages';
 
 import { Header } from './components/header';
 import { TodoList } from './components/todoList';
