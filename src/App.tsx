@@ -37,87 +37,102 @@ export const App: React.FC = () => {
 
   const container = useRef<HTMLDivElement>(null);
   const titleText = 'todos';
-  const subtitleText = "write your tasks";
+  const subtitleText = 'write your tasks';
 
-  useGSAP(() => {
-    const evenChars = ".char:nth-child(even)";
-    const oddChars = ".char:nth-child(odd)";
+  useGSAP(
+    () => {
+      const evenChars = '.char:nth-child(even)';
+      const oddChars = '.char:nth-child(odd)';
 
-    const tl = gsap.timeline();
+      const tl = gsap.timeline();
 
-    tl.from(evenChars, {
-      y: -100,
-      opacity: 0,
-      duration: 1,
-      ease: "power4.out",
-      stagger: 0.05,
-    }, 0)
-    .from(oddChars, {
-      y: 100,
-      opacity: 0,
-      duration: 1,
-      ease: "power4.out",
-      stagger: 0.05,
-    }, 0)
-    .from(".sub-char", {
-    opacity: 0,
-    y: 10,
-    duration: 0.3,
-    stagger: 0.08,
-    ease: "power1.out",
-  }, "-=0.4");
+      tl.from(
+        evenChars,
+        {
+          y: -100,
+          opacity: 0,
+          duration: 1,
+          ease: 'power4.out',
+          stagger: 0.05,
+        },
+        0,
+      )
+        .from(
+          oddChars,
+          {
+            y: 100,
+            opacity: 0,
+            duration: 1,
+            ease: 'power4.out',
+            stagger: 0.05,
+          },
+          0,
+        )
+        .from(
+          '.sub-char',
+          {
+            opacity: 0,
+            y: 10,
+            duration: 0.3,
+            stagger: 0.08,
+            ease: 'power1.out',
+          },
+          '-=0.4',
+        );
+    },
+    { scope: container },
+  );
 
-  }, { scope: container });
+  const createExplosion = (charElements: NodeListOf<HTMLElement>) => {
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const scrollLeft =
+      window.pageXOffset || document.documentElement.scrollLeft;
 
-const createExplosion = (charElements: NodeListOf<HTMLElement>) => {
-  const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-  const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+    charElements.forEach((charEl, index) => {
+      const rect = charEl.getBoundingClientRect();
+      const delay = index * 0.03;
+      const particlesPerChar = 100;
 
-  charElements.forEach((charEl, index) => {
-    const rect = charEl.getBoundingClientRect();
-    const delay = index * 0.03;
-    const particlesPerChar = 100;
-
-    gsap.to(charEl, {
-      opacity: 0,
-      duration: 0.05,
-      delay: delay,
-    });
-
-    for (let i = 0; i < particlesPerChar; i++) {
-      const particle = document.createElement('div');
-
-      const startX = rect.left + scrollLeft + Math.random() * rect.width;
-      const startY = rect.top + scrollTop + Math.random() * rect.height;
-
-      Object.assign(particle.style, {
-        position: 'absolute',
-        left: `${startX}px`,
-        top: `${startY}px`,
-        width: '2px',
-        height: '2px',
-        backgroundColor: '#4d4d4d',
-        borderRadius: '50%',
-        pointerEvents: 'none',
-        zIndex: '10000',
-        opacity: '0',
-      });
-
-      document.body.appendChild(particle);
-
-      gsap.to(particle, {
-        x: (Math.random() - 0.5) * 150,
-        y: (Math.random() - 0.5) * 150,
-        opacity: 1,
-        scale: 0,
-        duration: 0.5 + Math.random() * 0.3,
-        ease: "power2.out",
+      gsap.to(charEl, {
+        opacity: 0,
+        duration: 0.05,
         delay: delay,
-        onComplete: () => particle.remove(),
       });
-    }
-  });
-};
+
+      for (let i = 0; i < particlesPerChar; i++) {
+        const particle = document.createElement('div');
+
+        const startX = rect.left + scrollLeft + Math.random() * rect.width;
+        const startY = rect.top + scrollTop + Math.random() * rect.height;
+
+        Object.assign(particle.style, {
+          position: 'absolute',
+          left: `${startX}px`,
+          top: `${startY}px`,
+          width: '2px',
+          height: '2px',
+          backgroundColor: '#4d4d4d',
+          borderRadius: '50%',
+          pointerEvents: 'none',
+          zIndex: '10000',
+          opacity: '0',
+        });
+
+        document.body.appendChild(particle);
+
+        gsap.to(particle, {
+          x: (Math.random() - 0.5) * 150,
+          y: (Math.random() - 0.5) * 150,
+          opacity: 1,
+          scale: 0,
+          duration: 0.5 + Math.random() * 0.3,
+          ease: 'power2.out',
+          delay: delay,
+          onComplete: () => particle.remove(),
+        });
+      }
+    });
+  };
 
   useEffect(() => {
     if (inputRef.current) {
@@ -196,32 +211,37 @@ const createExplosion = (charElements: NodeListOf<HTMLElement>) => {
   const handleDelete = useCallback((todoId: number) => {
     const todoContainer = document.getElementById(`todo-label-${todoId}`);
 
-  if (todoContainer) {
-    const charElements = todoContainer.querySelectorAll<HTMLElement>('.todo__char');
+    if (todoContainer) {
+      const charElements =
+        todoContainer.querySelectorAll<HTMLElement>('.todo__char');
 
-    if (charElements.length > 0) {
-      createExplosion(charElements);
+      if (charElements.length > 0) {
+        createExplosion(charElements);
+      }
     }
-  }
+
     setIsLoading(prev => [...prev, todoId]);
 
     deleteTodo(todoId)
       .then(() => {
-      setTimeout(() => {
-        setTodos(prev => prev.filter(todo => todo.id !== todoId));
-      }, 600);
-    })
-    .catch(() => {
-      setErrorMessage(ErrorMessage.NoDelete);
-     if (todoContainer) {
-        gsap.to(todoContainer.querySelectorAll('.todo__char'), { opacity: 1, duration: 0.2 });
-      }
-    })
-    .finally(() => {
-      setIsLoading(prev => prev.filter(id => id !== todoId));
-      inputRef.current?.focus();
-    });
-}, []);
+        setTimeout(() => {
+          setTodos(prev => prev.filter(todo => todo.id !== todoId));
+        }, 600);
+      })
+      .catch(() => {
+        setErrorMessage(ErrorMessage.NoDelete);
+        if (todoContainer) {
+          gsap.to(todoContainer.querySelectorAll('.todo__char'), {
+            opacity: 1,
+            duration: 0.2,
+          });
+        }
+      })
+      .finally(() => {
+        setIsLoading(prev => prev.filter(id => id !== todoId));
+        inputRef.current?.focus();
+      });
+  }, []);
 
   const handleClearCompleted = useCallback(() => {
     const completedTodos = todos.filter(todo => todo.completed);
@@ -307,12 +327,12 @@ const createExplosion = (charElements: NodeListOf<HTMLElement>) => {
         </h1>
 
         <p className="todoapp__subtitle">
-    {subtitleText.split("").map((char, index) => (
-      <span key={index} className="sub-char">
-        {char === " " ? "\u00A0" : char}
-      </span>
-    ))}
-  </p>
+          {subtitleText.split('').map((char, index) => (
+            <span key={index} className="sub-char">
+              {char === ' ' ? '\u00A0' : char}
+            </span>
+          ))}
+        </p>
       </div>
 
       <div className="todoapp__content">

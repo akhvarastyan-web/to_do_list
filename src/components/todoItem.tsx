@@ -110,10 +110,10 @@ const TodoItemComponent: React.FC<Props> = ({
           }}
         >
           {todo.title.split('').map((char, index) => (
-      <span key={index} className="todo__char">
-        {char === ' ' ? '\u00A0' : char}
-      </span>
-    ))}
+            <span key={index} className="todo__char">
+              {char === ' ' ? '\u00A0' : char}
+            </span>
+          ))}
         </span>
       )}
 
