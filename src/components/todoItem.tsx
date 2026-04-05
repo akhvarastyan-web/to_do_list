@@ -101,6 +101,7 @@ const TodoItemComponent: React.FC<Props> = ({
         />
       ) : (
         <span
+          id={`todo-label-${todo.id}`}
           data-cy="TodoTitle"
           className="todo__title"
           onDoubleClick={() => {
@@ -108,7 +109,11 @@ const TodoItemComponent: React.FC<Props> = ({
             setNewTitle(todo.title);
           }}
         >
-          {todo.title}
+          {todo.title.split('').map((char, index) => (
+      <span key={index} className="todo__char">
+        {char === ' ' ? '\u00A0' : char}
+      </span>
+    ))}
         </span>
       )}
 

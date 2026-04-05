@@ -33,6 +33,11 @@
 
     word-break: break-all;
     transition: color 0.4s;
+    .todo__char {
+    display: inline-block;
+    white-space: pre;
+    opacity: 1;
+  }
   }
 
   &.completed &__title {
