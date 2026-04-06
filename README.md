@@ -11,7 +11,7 @@ Core Features:
 
 - Dynamic UX: Includes auto-focusing on the input field, individual loading indicators (spinners) for each task, and a notification system for API error handling.
 
-Experiance the live website:
+Experiance the live website: https://akhvarastyan-web.github.io/to_do_list/
 
 Technical Highlights:
 The application is built using a modern stack:
